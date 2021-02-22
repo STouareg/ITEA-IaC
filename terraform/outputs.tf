@@ -12,3 +12,8 @@ output "ec2_endpoint-2" {
   description = "The IP address of the EC2 instance - ubuntu-SERVER-2"
   value       = aws_instance.ubuntu-SERVER-2.public_ip
 }
+
+output "elb_endpoint" {
+  description = "The address of the Load Balancer"
+  value       = aws_elb.itea-elb.endpoint
+}
