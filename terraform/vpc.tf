@@ -1,0 +1,96 @@
+resource "aws_vpc" "IaC-vpc" {
+    cidr_block = "172.31.0.0/16"
+    instance_tenancy = "default" 
+    enable_dns_hostnames = true   
+    tags = {
+      "Name" = "IaC-vpc"
+    }
+}
+
+resource "aws_subnet" "IaC-subnet-1" {
+    vpc_id = aws_vpc.IaC-vpc.id
+    cidr_block = "172.31.0.0/20"
+    availability_zone = "eu-central-1a"
+    map_public_ip_on_launch = true
+    tags = {
+      "Name" = "IaC-subnet-1"
+    }
+}
+resource "aws_subnet" "IaC-subnet-2" {
+    vpc_id = aws_vpc.IaC-vpc.id
+    cidr_block = "172.31.16.0/20"
+    availability_zone = "eu-central-1b"
+    map_public_ip_on_launch = true
+    tags = {
+      "Name" = "IaC-subnet-2"
+    }
+}
+
+resource "aws_internet_gateway" "IaC-igateway" {
+    vpc_id = aws_vpc.IaC-vpc.id
+    tags = {
+        "Name" = "IaC-igateway"
+    }
+}
+
+resource "aws_route_table" "IaC-route-table" {
+    vpc_id = aws_vpc.IaC-vpc.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.IaC-igateway.id
+    }
+}
+
+resource "aws_route_table_association" "IaC-public-subnet-1"{
+    subnet_id = aws_subnet.IaC-subnet-1.id
+    route_table_id = aws_route_table.IaC-route-table.id
+}
+
+resource "aws_security_group" "IaC-ubnt-sg"{
+    vpc_id = aws_vpc.IaC-vpc.id
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = -1
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = {
+        "Name" = "IaC-ubnt-sg"
+    }
+}
+
+resource "aws_security_group" "IaC-db-sg"{
+    vpc_id = aws_vpc.IaC-vpc.id
+    
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = -1
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        from_port = 3306
+        to_port = 3306
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = {
+        "Name" = "IaC-db-sg"
+    }
+}

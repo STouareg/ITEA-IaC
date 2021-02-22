@@ -1,0 +1,50 @@
+name: 'Ansible'
+
+on:
+  workflow_run:
+    workflows:
+      - Terraform
+    types: 
+      - completed
+    branches:
+      - main
+    
+jobs:
+  mysql:
+    name: 'Ansible'
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: terrafrom.yml
+          workflow_conclusion: success
+          name: terraform
+
+      - id: host
+        env:
+          SSH: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+            host1=$(grep "ec2_endpoint-1" terraform.log | awk -F  ":" '{print $1}' )
+            host1=${host1//'ec2_endpoint-1 = "'}
+            host1=${host1//'"'}
+            echo 'ubuntu-SERVER-1 ansible_host='$host1 >> ansible/hosts    
+            host2=$(grep "ec2_endpoint-2" terraform.log | awk -F  ":" '{print $1}' )
+            host2=${host2//'ec2_endpoint-2 = "'}
+            host2=${host2//'"'}
+            echo 'ubuntu-SERVER-2 ansible_host='$host2 >> ansible/hosts    
+            echo "$SSH" > ansible/key.pem
+            chmod 400 ansible/key.pem
+      - name: Ansible
+        uses: saubermacherag/ansible-playbook-docker-action@v1.3
+        with:
+          playbookName: 'ansible/deploy.yml'
+          inventoryFile: 'ansible/hosts'
+          keyFile: 'ansible/key.pem'
+
+      
