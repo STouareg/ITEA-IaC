@@ -1,9 +1,9 @@
 resource "aws_elb" "iac-elb" {
-  name               = "lesson12-elb"
+  name               = "iac-elb"
 
-  subnets = [aws_subnet.itea-subnet-1.id]
+  subnets = [aws_subnet.iac-subnet-1.id]
 
-  security_groups = [ aws_security_group.itea-ubnt-sg.id ]
+  security_groups = [ aws_security_group.iac-ubnt-sg.id ]
 
   listener {
     instance_port     = 80
@@ -20,7 +20,7 @@ resource "aws_elb" "iac-elb" {
     interval            = 30
   }
 
-  instances                   = [aws_instance.ubuntu-ITEA-1.id,aws_instance.ubuntu-ITEA-2.id]
+  instances                   = [aws_instance.ubuntu-SERVER-1.id,aws_instance.ubuntu-SERVER-2.id]
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
