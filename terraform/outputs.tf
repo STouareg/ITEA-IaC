@@ -1,6 +1,6 @@
 output "rds_endpoint" {
   description = "The address of the RDS instance"
-  value       = aws_db_instance.IaC-db.endpoint
+  value       = aws_db_instance.itea-db.endpoint
 }
 
 output "ec2_endpoint-1" {

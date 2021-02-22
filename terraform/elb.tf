@@ -1,9 +1,9 @@
-resource "aws_elb" "iac-elb" {
-  name               = "iac-elb"
+resource "aws_elb" "itea-elb" {
+  name               = "itea-elb"
 
-  subnets = [aws_subnet.iac-subnet-1.id]
+  subnets = [aws_subnet.itea-subnet-1.id]
 
-  security_groups = [ aws_security_group.iac-ubnt-sg.id ]
+  security_groups = [ aws_security_group.itea-ubnt-sg.id ]
 
   listener {
     instance_port     = 80
@@ -27,6 +27,6 @@ resource "aws_elb" "iac-elb" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "iac-elb"
+    Name = "itea-elb"
   }
 }

@@ -1,4 +1,4 @@
-- name: IaC
+- name: itea
   gather_facts: false
   hosts: [all]
   become: yes

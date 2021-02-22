@@ -33,4 +33,4 @@ jobs:
           db=$(grep "rds_endpoint" terraform.log | awk -F  ":" '{print $1}' )
           db=${db//'rds_endpoint = "'}
           echo $db
-          mysql --host $db --port 3306 -uiacuser -pq1q1q1q1 iacdb < mysql/iacdb.sql
+          mysql --host $db --port 3306 -uiteauser -pq1q1q1q1 iteadb < mysql/iteadb.sql
