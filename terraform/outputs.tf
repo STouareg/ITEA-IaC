@@ -15,5 +15,5 @@ output "ec2_endpoint-2" {
 
 output "elb_endpoint" {
   description = "The address of the Load Balancer"
-  value       = aws_elb.itea-elb.public_ip
+  value       = aws_elb.itea-elb.dns_name
 }
